@@ -56,6 +56,10 @@ Crie uma aplicação para armazenar projetos e suas tarefas do zero utilizando [
 
 - Um middleware global chamado em todas requisições que imprime (`console.log`) uma contagem de quantas requisições foram feitas na aplicação até então;
 
+### Inicar aplicação
+
+- yarn dev
+
 ## :memo: Licença
 
 Esse projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE.md) para mais detalhes.

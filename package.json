@@ -1,0 +1,12 @@
+{
+  "name": "bootcamp-gostack-desafio-01",
+  "version": "1.0.0",
+  "description": "First challenge from GoStack bootcamp",
+  "main": "index.js",
+  "repository": "https://github.com/MateuVieira/bootcamp-gostack-desafio-01.git",
+  "author": "MateuVieira <35344433+MateuVieira@users.noreply.github.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

@@ -6,7 +6,13 @@
   "repository": "https://github.com/MateuVieira/bootcamp-gostack-desafio-01.git",
   "author": "MateuVieira <35344433+MateuVieira@users.noreply.github.com>",
   "license": "MIT",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
   "dependencies": {
     "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
   }
 }

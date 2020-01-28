@@ -4,7 +4,7 @@ const server = express();
 
 server.use(express.json());
 
-const projetcs = [
+const projects = [
     {
         id: "1",
         title: "Novo projeto",
@@ -32,9 +32,20 @@ server.use( (req, res, next) => {
     countRequests++;
 });
 
-function checkUserExists( req, res, next) {
-    if(!req.body.name) {
-        return res.status(400).json({ error: 'User name is required' });
+function checkProjectExists( req, res, next) {
+    if(!req.body.id) {
+        return res.status(400).json({ error: 'User id is required' });
+    }
+    if(!req.body.title) {
+        return res.status(400).json({ error: 'User title is required' });
+    }
+
+    const verifyIdInUse = projects
+            .map( project => project.id == req.body.id)
+            .reduce((a,b) => a+b);
+
+    if(verifyIdInUse > 0) {
+        return res.status(400).json({ error: 'Id exist' });
     }
 
     return next();
@@ -42,27 +53,42 @@ function checkUserExists( req, res, next) {
 
 function checkIndexInArray( req, res, next) {
 
-    const user = users[req.params.index];
+    const project = projects[req.params.index];
 
-    if(!user) {
+    if(!project) {
         return res.status(400).json({ error: 'User does not exists' });
     }
 
-    req.user = user;
+    req.project = project;
 
     return next();
 }
 
-server.get('/users', (req, res) => {
+server.get('/projects', (req, res) => {
     
-    return res.json(users);
+    return res.json(projects);
 });
 
-server.get('/users/:index', checkIndexInArray, (req, res) => {
-    return res.json(req.user);
+server.get('/projects/:index', checkIndexInArray, (req, res) => {
+    return res.json(req.project);
 });
 
-server.post('/users', checkUserExists, (req, res) => {
+server.post('/projects', checkProjectExists, (req, res) => {
+
+    const { id, title, task = [] } = req.body;
+
+    const project = {
+        id,
+        title,
+        task
+    };
+
+    projects.push(project);
+
+    res.json(projects);
+});
+
+server.post('/projects/:id/tasks', checkProjectExists, (req, res) => {
 
     const { name } = req.body;
 
@@ -71,7 +97,7 @@ server.post('/users', checkUserExists, (req, res) => {
     res.json(users);
 });
 
-server.put('/users/:index', checkUserExists, checkIndexInArray, (req, res) => {
+server.put('/projects/:index', checkProjectExists, checkIndexInArray, (req, res) => {
 
     const  { index } = req.params;
     const { name } = req.body;
@@ -82,7 +108,7 @@ server.put('/users/:index', checkUserExists, checkIndexInArray, (req, res) => {
     
 });
 
-server.delete('/users/:index', checkIndexInArray, (req, res) => {
+server.delete('/projects/:index', checkIndexInArray, (req, res) => {
 
     const  { index } = req.params;
 

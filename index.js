@@ -50,10 +50,11 @@ function checkProjectExists( req, res, next) {
 
 function checkIndexInArray( req, res, next) {
 
-    const project = projects[req.params.index];
+    const indexProject =findIndexProjectById(req.params.id);
+    const project = projects[indexProject];
 
     if(!project) {
-        return res.status(400).json({ error: 'User does not exists' });
+        return res.status(400).json({ error: 'Project does not exists' });
     }
 
     req.project = project;
@@ -83,12 +84,17 @@ function checkTitleExists( req, res, next) {
     return next();
 }
 
+function findIndexProjectById(id) {
+    const indexProject = projects.findIndex(project => project.id === id);
+    return indexProject;
+}
+
 server.get('/projects', (req, res) => {
     
     return res.json(projects);
 });
 
-server.get('/projects/:index', checkIndexInArray, (req, res) => {
+server.get('/projects/:id', checkIndexInArray, (req, res) => {
     return res.json(req.project);
 });
 
@@ -116,27 +122,30 @@ server.post('/projects/:id/tasks', checkIndexTaskInArray, checkTitleExists, (req
     res.json(req.project);
 });
 
-server.put('/projects/:index', checkIndexInArray, checkTitleExists, (req, res) => {
+server.put('/projects/:id', checkIndexInArray, checkTitleExists, (req, res) => {
 
-    const  { index } = req.params;
+    const  { id } = req.params;
     const { title } = req.body;
 
-    projects[index].title = title;
+    const indexProject = findIndexProjectById(id)
+    projects[indexProject].title = title;
 
     res.json(projects);
     
 });
 
-server.delete('/projects/:index', checkIndexInArray, (req, res) => {
+server.delete('/projects/:id', checkIndexInArray, (req, res) => {
 
-    const  { index } = req.params;
+    const  { id } = req.params;
 
-    
+    const indexProject = findIndexProjectById(id);
 
-    projects.splice(index, 1);
+    projects.splice(indexProject, 1);
 
-    res.send();
+    res.send(projects);
 });
 
 server.listen(3000);
+
+
 

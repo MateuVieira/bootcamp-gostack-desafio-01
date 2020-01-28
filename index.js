@@ -36,9 +36,7 @@ function checkProjectExists( req, res, next) {
     if(!req.body.id) {
         return res.status(400).json({ error: 'User id is required' });
     }
-    if(!req.body.title) {
-        return res.status(400).json({ error: 'User title is required' });
-    }
+    
 
     const verifyIdInUse = projects
             .map( project => project.id == req.body.id)
@@ -64,6 +62,28 @@ function checkIndexInArray( req, res, next) {
     return next();
 }
 
+function checkIndexTaskInArray( req, res, next) {
+
+
+    const project = projects[req.params.id];
+
+    if(!project) {
+        return res.status(400).json({ error: 'User does not exists' });
+    }
+
+    req.project = project;
+
+    return next();
+}
+
+function checkTitleExists( req, res, next) {
+    if(!req.body.title) {
+        return res.status(400).json({ error: 'User title is required' });
+    }
+
+    return next();
+}
+
 server.get('/projects', (req, res) => {
     
     return res.json(projects);
@@ -73,7 +93,7 @@ server.get('/projects/:index', checkIndexInArray, (req, res) => {
     return res.json(req.project);
 });
 
-server.post('/projects', checkProjectExists, (req, res) => {
+server.post('/projects', checkProjectExists, checkTitleExists, (req, res) => {
 
     const { id, title, task = [] } = req.body;
 
@@ -88,13 +108,13 @@ server.post('/projects', checkProjectExists, (req, res) => {
     res.json(projects);
 });
 
-server.post('/projects/:id/tasks', checkProjectExists, (req, res) => {
+server.post('/projects/:id/tasks', checkIndexTaskInArray, checkTitleExists, (req, res) => {
 
-    const { name } = req.body;
+    const { title } = req.body;
 
-    users.push(name);
+    req.project.tasks.push(title);
 
-    res.json(users);
+    res.json(req.project);
 });
 
 server.put('/projects/:index', checkProjectExists, checkIndexInArray, (req, res) => {

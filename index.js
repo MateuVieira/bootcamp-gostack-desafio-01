@@ -36,7 +36,6 @@ function checkProjectExists( req, res, next) {
     if(!req.body.id) {
         return res.status(400).json({ error: 'User id is required' });
     }
-    
 
     const verifyIdInUse = projects
             .map( project => project.id == req.body.id)
@@ -117,14 +116,14 @@ server.post('/projects/:id/tasks', checkIndexTaskInArray, checkTitleExists, (req
     res.json(req.project);
 });
 
-server.put('/projects/:index', checkProjectExists, checkIndexInArray, (req, res) => {
+server.put('/projects/:index', checkIndexInArray, checkTitleExists, (req, res) => {
 
     const  { index } = req.params;
-    const { name } = req.body;
+    const { title } = req.body;
 
-    users[index] = name;
+    projects[index].title = title;
 
-    res.json(users);
+    res.json(projects);
     
 });
 
@@ -132,7 +131,9 @@ server.delete('/projects/:index', checkIndexInArray, (req, res) => {
 
     const  { index } = req.params;
 
-    users.splice(index, 1);
+    
+
+    projects.splice(index, 1);
 
     res.send();
 });

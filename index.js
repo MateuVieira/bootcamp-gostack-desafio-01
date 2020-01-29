@@ -64,8 +64,8 @@ function checkIndexInArray( req, res, next) {
 
 function checkIndexTaskInArray( req, res, next) {
 
-
-    const project = projects[req.params.id];
+    const indexProject =findIndexProjectById(req.params.id);
+    const project = projects[indexProject];
 
     if(!project) {
         return res.status(400).json({ error: 'User does not exists' });
